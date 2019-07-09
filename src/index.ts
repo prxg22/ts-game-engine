@@ -40,5 +40,14 @@
 // console.log(em.getElementsWithComponent("HealthComponent"));
 
 import EntityFactory from "./EntityFactory";
-import player from "";
-EntityFactory();
+import player from "./player";
+import HealthComponent from "./HealthComponent";
+
+EntityFactory(player.components)
+  .then(([entity, components]) => {
+    const [health] = components as HealthComponent[];
+    console.log(health.hp);
+    health.hit(10);
+    console.log(health.hp);
+  })
+  .catch(console.error);

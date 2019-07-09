@@ -1,9 +1,0 @@
-components:
-  - HealthComponent
-  - PhysicalComponent:
-    pos:
-      - 120
-      - 120
-    size:
-      - 10
-      - 10
