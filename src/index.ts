@@ -42,12 +42,43 @@
 import EntityFactory from "./EntityFactory";
 import player from "./player";
 import HealthComponent from "./HealthComponent";
+import PhysicalComponent from "./PhysicalComponent";
 
 EntityFactory(player.components)
   .then(([entity, components]) => {
-    const [health] = components as HealthComponent[];
-    console.log(health.hp);
-    health.hit(10);
-    console.log(health.hp);
+    const [health, physical] = components as [
+      HealthComponent,
+      PhysicalComponent
+    ];
+    const canvas = document.getElementById("game") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+
+    const render = () => {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, 800, 600);
+      const [x, y] = physical.pos;
+      const [w, h] = physical.size;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(x, y, w, h);
+      ctx.fillText(`${health.hp}`, x, y - 10, w * 4);
+      if (health.dead) ctx.fillText(`dead!`, x, y + 30, w * 4);
+      else ctx.fillText(`live`, x, y + 30, w * 4);
+    };
+
+    let buff = 0;
+    let last = 0;
+    const loop = (dt: number) => {
+      buff += dt - (last || dt);
+      last = dt;
+      if (buff > 400) {
+        health.hit(10);
+        buff = 0;
+      }
+
+      render();
+      if (!health.dead) window.requestAnimationFrame(loop);
+    };
+
+    window.requestAnimationFrame(loop);
   })
   .catch(console.error);

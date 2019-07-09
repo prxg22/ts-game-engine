@@ -23,7 +23,7 @@ const reducer = async (
   const componentClass = (await import(`./${type}`)).default;
   let component: Component | {} = {};
 
-  component = new componentClass();
+  component = new componentClass(attr);
   const last = await acc;
 
   return [...last, component as Component];
